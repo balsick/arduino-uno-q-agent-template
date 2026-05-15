@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------------
+# Arduino App Lab
+# ---------------------------------------------------------------------------
+.app-lab/
+build/
+dist/
+*.log
+
+# Compiled sketch artifacts (Arduino CLI / App Lab toolchain)
+sketch/build/
+sketch/.build/
+*.hex
+*.bin
+*.elf
+*.map
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+
+# ---------------------------------------------------------------------------
+# Editors / IDEs
+# ---------------------------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------------------------------------------------------------------------
+# OS junk
+# ---------------------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ---------------------------------------------------------------------------
+# Secrets / local config
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+secrets.*
+*.pem
+*.key
