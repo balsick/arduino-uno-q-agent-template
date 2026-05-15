@@ -51,10 +51,14 @@ docs/agent/              # on-demand docs for you
   bridge.md
   cli.md
   frontend.md
-  bricks/
+  bricks/                # one file per brick (import: arduino.app_bricks.<name>)
     _template.md
     web_ui.md
     motion_detection.md
+    dbstorage_sqlstore.md
+  peripherals/           # one file per peripheral (import: arduino.app_peripherals.<name>)
+    remote_sensor.md
+    websocket_camera.md
 ```
 
 The board stores deployed apps under `/home/arduino/ArduinoApps/<app-name>/`.
@@ -178,33 +182,37 @@ When the user asks for a feature:
 
 ---
 
-## 8. New-brick discovery workflow
+## 8. New-brick / peripheral discovery workflow
 
-When the user asks for a feature that requires a brick **not yet documented** in `docs/agent/bricks/`, do this — do not skip steps.
+When the user asks for a feature that requires a brick or peripheral **not yet documented** in `docs/agent/bricks/` or `docs/agent/peripherals/`, do this — do not skip steps.
+
+> Bricks live under `arduino.app_bricks.<name>` and are declared in `app.yaml` under `bricks:`. Peripherals live under `arduino.app_peripherals.<name>` and are used directly from Python (no `bricks:` entry). Some peripherals are consumed by bricks (e.g. a `WebSocketCamera` passed to `VideoObjectDetection`) — in that case the brick that uses it still goes in `app.yaml`.
 
 1. **Scrape sources.** Fetch:
-   - `https://github.com/arduino/app-bricks-examples` — search the repo for files that import or use the brick (look in subdirectories named after the brick, and grep example `python/main.py` files). Read the most relevant examples end-to-end.
-   - `https://github.com/arduino/app-bricks-py/tree/main/src/arduino/app_bricks/<brick>` — README, `__init__.py` (or main module) for the actual Python signatures, and the `examples/` folder.
-2. **Draft the doc locally.** Copy `docs/agent/bricks/_template.md` to `docs/agent/bricks/<brick>.md`. Fill it in: ≤120 lines, assertive, snippet-driven, no marketing prose. Match the style of `web_ui.md`, `motion_detection.md`, `remote_sensor.md`.
-3. **Ask the user to confirm.** Show: brick name, sources scraped (URLs), draft size, and a one-line summary of the API surface. Wait for an explicit yes/no before writing anything.
+   - `https://github.com/arduino/app-bricks-examples` — search the repo for files that import or use the target (look in `examples/*/python/main.py`, the `app.yaml`, and the example READMEs). Read the most relevant examples end-to-end.
+   - Source for the implementation:
+     - brick → `https://github.com/arduino/app-bricks-py/tree/main/src/arduino/app_bricks/<name>` (README + `__init__.py` + `examples/`).
+     - peripheral → `https://github.com/arduino/app-bricks-py/tree/main/src/arduino/app_peripherals/<name>` (README + `__init__.py` + module files + `examples/`).
+2. **Draft the doc locally.** Copy `docs/agent/bricks/_template.md` to either `docs/agent/bricks/<name>.md` or `docs/agent/peripherals/<name>.md`. Fill it in: ≤120 lines, assertive, snippet-driven, no marketing prose. Match the style of `web_ui.md`, `motion_detection.md`, `peripherals/remote_sensor.md`, `peripherals/websocket_camera.md`.
+3. **Ask the user to confirm.** Show: name, kind (brick vs peripheral), sources scraped (URLs), draft size, and a one-line summary of the API surface. Wait for an explicit yes/no before writing anything.
 4. **On yes — write into the current project:**
-   - Save `docs/agent/bricks/<brick>.md`.
+   - Save the doc under the correct folder (`bricks/` or `peripherals/`).
    - Add a row to the table in §1 of this `AGENTS.md`.
 5. **Open a PR upstream so the template grows.** The template repo is `balsick/arduino-uno-q-agent-template`. From a working clone/fork:
    ```bash
    gh repo fork balsick/arduino-uno-q-agent-template --clone --remote=false || true
    # in your local fork:
-   git checkout -b docs/<brick>
-   # add docs/agent/bricks/<brick>.md and the AGENTS.md §1 table entry
-   git add docs/agent/bricks/<brick>.md AGENTS.md
-   git commit -m "docs: add <brick> brick"
-   git push -u origin docs/<brick>
+   git checkout -b docs/<name>
+   # add docs/agent/{bricks|peripherals}/<name>.md and the AGENTS.md §1 table entry
+   git add docs/agent AGENTS.md
+   git commit -m "docs: add <name> (<brick|peripheral>)"
+   git push -u origin docs/<name>
    gh pr create --repo balsick/arduino-uno-q-agent-template \
-     --title "docs: add <brick> brick" \
-     --body  "Adds agent docs for the \`<brick>\` brick. Sources: <URLs scraped>."
+     --title "docs: add <name> (<brick|peripheral>)" \
+     --body  "Adds agent docs for the \`<name>\` <brick|peripheral>. Sources: <URLs scraped>."
    ```
    Tell the user the PR URL.
-6. **On no — abort.** Do not write the doc. The agent can still proceed using the brick (referring to the scraped sources inline) but should warn the user that future sessions will lack the local doc.
+6. **On no — abort.** Do not write the doc. The agent can still proceed (referring to the scraped sources inline) but should warn the user that future sessions will lack the local doc.
 
 ---
 
@@ -218,5 +226,5 @@ When the user asks for a feature that requires a brick **not yet documented** in
 - [ ] If WebUI is used: `assets/index.html` exists, JS vendor libs are local (not CDN).
 - [ ] `app.yaml` lists every brick the code uses, under `bricks:`.
 - [ ] `sketch/sketch.yaml` lists every sketch library the code uses, under `libraries:`.
-- [ ] For every brick used, `docs/agent/bricks/<brick>.md` exists (else §8 was followed).
+- [ ] For every brick/peripheral used, the matching doc exists under `docs/agent/bricks/` or `docs/agent/peripherals/` (else §8 was followed).
 - [ ] Deployment path chosen correctly: on-board `arduino-app-cli` vs off-board `adb shell arduino-app-cli` (see `docs/agent/cli.md`).

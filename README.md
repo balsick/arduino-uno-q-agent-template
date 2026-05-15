@@ -13,7 +13,8 @@ docs/agent/              # on-demand reference docs the agent loads per task
   cli.md                 # arduino-app-cli + on-board vs off-board (adb) workflow
   frontend.md            # Web UI conventions (HTML/CSS/JS, Socket.IO, vendoring)
   bricks/                # one file per brick (web_ui, motion_detection, …)
-    _template.md         # copy this when adding a new brick doc
+    _template.md         # copy this when adding a new brick/peripheral doc
+  peripherals/           # one file per peripheral (remote_sensor, websocket_camera, …)
 .gitignore
 ```
 
@@ -38,18 +39,19 @@ your specific app.
 - **Deploy & run the app** via `arduino-app-cli` (on the board) or
   `adb push` + `adb shell arduino-app-cli` (from your dev machine). See
   [`docs/agent/cli.md`](docs/agent/cli.md).
-- **Adopt an undocumented brick** by scraping
+- **Adopt an undocumented brick or peripheral** by scraping
   [`arduino/app-bricks-examples`](https://github.com/arduino/app-bricks-examples)
   and [`arduino/app-bricks-py`](https://github.com/arduino/app-bricks-py), then
-  drafting a doc under `docs/agent/bricks/<brick>.md` — after asking you to
-  confirm.
+  drafting a doc under `docs/agent/bricks/<name>.md` or
+  `docs/agent/peripherals/<name>.md` — after asking you to confirm.
 
 ## How the template self-improves
 
-Whenever the agent has to document a previously-unknown brick (see `AGENTS.md`
-§8), it also opens a pull request against this template repository
-(`balsick/arduino-uno-q-agent-template`) adding the same brick doc. Over time
-the template accumulates coverage of every brick the community uses.
+Whenever the agent has to document a previously-unknown brick or peripheral
+(see `AGENTS.md` §8), it also opens a pull request against this template
+repository (`balsick/arduino-uno-q-agent-template`) adding the same doc. Over
+time the template accumulates coverage of every brick and peripheral the
+community uses.
 
 ## Deploy cheat-sheet
 

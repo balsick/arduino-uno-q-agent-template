@@ -1,13 +1,15 @@
-# `<Brick Name>` brick
+# `<Brick or Peripheral Name>`
 
-> Template. Copy to `docs/agent/bricks/<brick_name>.md` and fill in. Keep it **≤120 lines**, assertive, snippet-driven. No marketing prose. Use [web_ui.md](web_ui.md) and [motion_detection.md](motion_detection.md) as style references. Delete this blockquote in the final doc.
+> Template. Copy to `docs/agent/bricks/<name>.md` **or** `docs/agent/peripherals/<name>.md` and fill in. Keep it **≤120 lines**, assertive, snippet-driven. No marketing prose. Use [web_ui.md](web_ui.md) and [motion_detection.md](motion_detection.md) (bricks) or [../peripherals/remote_sensor.md](../peripherals/remote_sensor.md) and [../peripherals/websocket_camera.md](../peripherals/websocket_camera.md) (peripherals) as style references. Delete this blockquote in the final doc.
 
-One-paragraph summary: what the brick does, what it's for, the package import path. Reference the source:
-`https://github.com/arduino/app-bricks-py/tree/main/src/arduino/app_bricks/<brick>`.
+One-paragraph summary: what it does, what it's for, the package import path. Reference the source:
+- brick → `https://github.com/arduino/app-bricks-py/tree/main/src/arduino/app_bricks/<name>`.
+- peripheral → `https://github.com/arduino/app-bricks-py/tree/main/src/arduino/app_peripherals/<name>`.
 
 ## Install
 
-Tell the user to add the brick from the App Lab GUI (Add Brick button). The App Lab edits `app.yaml` — never hand-edit `bricks:`. List any required sketch libraries (the user must add them via the App Lab GUI as well) and any pip packages the brick auto-pulls.
+- **Brick**: edit `app.yaml` directly to add `- arduino:<name>: {}` under `bricks:` (and any required device entries). List any required sketch libraries (add them to `sketch/sketch.yaml` under `libraries:` directly) and any pip packages the brick auto-pulls.
+- **Peripheral**: no `bricks:` entry needed. Note any pip packages the peripheral auto-pulls. If it is consumed by a brick (e.g. a camera passed to a video brick), explain how to wire it.
 
 ## Python API
 
@@ -52,4 +54,4 @@ App.run()
 
 - List concrete pitfalls: type mismatches, default ports, missing files, deadlock conditions, threading rules.
 - Note any required env vars, model assets, or external services.
-- Note anything the agent must tell the user to do via the App Lab GUI (bricks to add, sketch libraries to install).
+- Note anything the agent must declare in `app.yaml` (bricks, device bindings) or `sketch/sketch.yaml` (libraries) — the agent now edits these files directly, no GUI step.
